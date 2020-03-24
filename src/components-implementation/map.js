@@ -33,7 +33,9 @@ const props = {
   },
   options: {
     type: Object,
-    default () { return {} }
+    default () {
+      return {}
+    }
   }
 }
 
@@ -61,7 +63,9 @@ const linkedMethods = [
   'fitBounds'
 ].reduce((all, methodName) => {
   all[methodName] = function (...args) {
-    if (this.$mapObject) { this.$mapObject[methodName].apply(this.$mapObject, args) }
+    if (this.$mapObject) {
+      this.$mapObject[methodName].apply(this.$mapObject, args)
+    }
   }
   return all
 }, {})
@@ -74,7 +78,9 @@ const customMethods = {
     }
   },
   resizePreserveCenter () {
-    if (!this.$mapObject) { return }
+    if (!this.$mapObject) {
+      return
+    }
 
     const oldCenter = this.$mapObject.getCenter()
     google.maps.event.trigger(this.$mapObject, 'resize')
@@ -97,7 +103,10 @@ export default {
 
   provide () {
     this.$mapPromise = new Promise((resolve, reject) => {
-      this.$mapPromiseDeferred = { resolve, reject }
+      this.$mapPromiseDeferred = {
+        resolve,
+        reject
+      }
     })
     return {
       $mapPromise: this.$mapPromise
@@ -107,14 +116,17 @@ export default {
   computed: {
     finalLat () {
       return this.center &&
-        (typeof this.center.lat === 'function') ? this.center.lat() : this.center.lat
+      (typeof this.center.lat === 'function') ? this.center.lat() : this.center.lat
     },
     finalLng () {
       return this.center &&
-        (typeof this.center.lng === 'function') ? this.center.lng() : this.center.lng
+      (typeof this.center.lng === 'function') ? this.center.lng() : this.center.lng
     },
     finalLatLng () {
-      return { lat: this.finalLat, lng: this.finalLng }
+      return {
+        lat: this.finalLat,
+        lng: this.finalLng
+      }
     }
   },
 
@@ -134,6 +146,7 @@ export default {
   },
 
   mounted () {
+    console.log('MAP Mounted called')
     return this.$gmapApiPromiseLazy().then(() => {
       // getting the DOM element where to create the map
       const element = this.$refs['vue-map']
@@ -154,7 +167,6 @@ export default {
         this.$mapObject = window[recycleKey].map
         this.$mapObject.setOptions(options)
       } else {
-        // console.warn('[vue2-google-maps] New google map created')
         this.$mapObject = new google.maps.Map(element, options)
         window[recycleKey] = { map: this.$mapObject }
       }
